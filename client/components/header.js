@@ -3,6 +3,12 @@ import Accounts from './accounts';
 import { Link, browserHistory } from 'react-router';
 
 class Header extends Component {
+  onBindClick(event) {
+    event.preventDefault();
+
+    browserHistory.push(`/new_session`);
+  }
+
   render () {
     return (
       <nav className="nav navbar-default">
@@ -12,6 +18,9 @@ class Header extends Component {
         <ul className="nav navbar-nav">
           <li>
             <Accounts />
+          </li>
+          <li>
+            <a href="#" onClick={this.onBindClick.bind(this)}>New session</a>
           </li>
         </ul>
       </nav>

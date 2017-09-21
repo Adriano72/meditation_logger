@@ -2,5 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Sessions } from '../imports/collections/sessions';
 
 Meteor.startup(() => {
-  // code to run on server at startup
+  Meteor.publish('sessions', function() {
+    return Sessions.find({ ownerId: this.userId });
+  });
 });

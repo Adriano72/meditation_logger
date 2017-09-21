@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
+import { Sessions } from '../../../imports/collections/sessions';
 import moment from 'moment';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -11,7 +12,7 @@ class SessionsCreate extends Component {
 
     this.state = {
       error: '',
-      startDate: moment()
+      date: moment()
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -19,18 +20,27 @@ class SessionsCreate extends Component {
 
   handleChange(date) {
     this.setState({
-      startDate: date
+      date: date
     });
+  }
 
-    console.log("Date ", moment(this.state.startDate).format());
+  checkDuplicates() {
+
+    newDate = moment(this.state.date).format("MMM Do YY");
+
+
+    const date = Sessions.findOne({
+      'sessionDay': this.state.date
+    });
+    console.log("Duplicates state "+ date );
   }
 
   onSaveClick() {
-    console.log("Ciao");
-    //console.log("DATI FORM: ", this.refs.journal.value);
+    this.checkDuplicates();
+
     Meteor.call(
       'sessions.insert',
-      moment(this.state.startDate).format(),
+      moment(this.state.date).format(),
       this.refs.morning.checked,
       this.refs.evening.checked,
       this.refs.journal.value
@@ -43,7 +53,7 @@ class SessionsCreate extends Component {
           <div className="form-group">
             <label>Date</label>
             <DatePicker ref="date"
-              selected={this.state.startDate}
+              selected={this.state.date}
               onChange={this.handleChange}
             />
 

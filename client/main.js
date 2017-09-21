@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 
 import App from './components/app';
+import LoggerMain from './components/logger_main';
 import SessionsCreate from './components/sessions/sessions_create';
 
 const routes = (
   <Router history={browserHistory}>
     <Route path="/" component={App}>
-    <Route path="new_session" component={SessionsCreate} />
+    <Route path="new_session" component={LoggerMain} />
 
     </Route>
   </Router>

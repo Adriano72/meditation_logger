@@ -8,18 +8,21 @@ class SessionsList extends Component {
 
   renderRows() {
     return this.props.sessions.map(session => {
-      const { sessionDay, morningSession, eveningSession, journalText  } = session;
-      console.log("SessionDay ", sessionDay);
+      const { _id, sessionDay, morningSession, eveningSession, journalText  } = session;
+      //console.log("SessionDay ", sessionDay);
       const cdate = (moment(sessionDay).format('MMMM Do YYYY'));
       const morning = morningSession?"Yes":"No";
       const evening = eveningSession?"Yes":"No";
+      const text = lodash.truncate(journalText, {
+        'length': 54
+      });
 
       return (
-        <tr key={cdate}>
+        <tr key={_id}>
           <td>{cdate}</td>
           <td>{morning}</td>
           <td>{evening}</td>
-          <td>{journalText}</td>
+          <td>{text}</td>
         </tr>
       )
     })
@@ -48,5 +51,5 @@ class SessionsList extends Component {
 export default createContainer(() => {
   Meteor.subscribe('sessions');
 
-  return { sessions: Sessions.find({}).fetch() };
+  return { sessions: Sessions.find({}, { sort: { sessionDay: -1 } }).fetch() };
 }, SessionsList);

@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
+import { createContainer } from 'meteor/react-meteor-data';
+import { Link, browserHistory } from 'react-router';
 import DatePicker from 'react-datepicker';
 import { Sessions } from '../../../imports/collections/sessions';
 import moment from 'moment';
-
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
+import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
+import Session from '../../../imports/classes/Session';
+import { ValidationError } from 'meteor/jagi:astronomy';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class SessionsCreate extends Component {
@@ -25,26 +32,42 @@ class SessionsCreate extends Component {
   }
 
   checkDuplicates() {
-
-    newDate = moment(this.state.date).format("MMM Do YY");
-
-
-    const date = Sessions.findOne({
-      'sessionDay': this.state.date
+    var stateDate = new Date(moment(this.state.date).startOf('day').format());
+    var test = _.find(this.props.sessions, function(o) {
+      return (o.sessionDay.getTime() === stateDate.getTime());
     });
-    console.log("Duplicates state "+ date );
+    return(test);
   }
 
   onSaveClick() {
-    this.checkDuplicates();
-
-    Meteor.call(
-      'sessions.insert',
-      moment(this.state.date).format(),
-      this.refs.morning.checked,
-      this.refs.evening.checked,
-      this.refs.journal.value
-    )
+    if(this.checkDuplicates()){
+      //console.log("A session has already been entered for this day!");
+      Alert.error('A session has already been entered for this day!', {
+        position: 'top-left',
+        effect: 'slide',
+        timeout: 3000,
+        offset: 360
+      });
+    } else {
+      var newSession = new Session();
+      newSession.insert(
+        moment(this.state.date).startOf('day').format(),
+        this.refs.morning.checked,
+        this.refs.evening.checked,
+        this.refs.journal.value
+      );
+      Alert.success('Session created', {
+        position: 'top-left',
+        effect: 'jelly',
+        onShow: function () {
+          setTimeout(function(){
+            browserHistory.push('/session_list');
+          }, 2000);
+        },
+        timeout: 1500,
+        offset: 360
+      });
+    }
   }
 
   render() {
@@ -80,9 +103,16 @@ class SessionsCreate extends Component {
             onClick={this.onSaveClick.bind(this)}>
             Save
           </button>
+          <Alert stack={{limit: 3}} />
         </div>
     )
   }
 }
 
-export default SessionsCreate;
+//export default SessionsCreate;
+
+export default createContainer(() => {
+  Meteor.subscribe('sessions');
+
+  return { sessions: Sessions.find({}).fetch() };
+}, SessionsCreate);

@@ -56,12 +56,13 @@ class SessionsEdit extends Component {
   }
 
   render() {
+    console.log("SESSION : ",this.props);
     return (
         <div>
           <div className="form-group">
             <label>Date</label>
             <div>
-              {this.props.session.sessionDay}
+              {this.props.sessions.sessionDay}
             </div>
 
             <div className="checkbox">
@@ -96,7 +97,10 @@ class SessionsEdit extends Component {
 //export default SessionsEdit;
 
 export default createContainer((props) => {
-  const { sessionId } = props.param
+  console.log("PROPS: ", props);
+  const { sessionId } = props.params;
+  console.log("SESSION ID: ", { sessionId });
+
   Meteor.subscribe('sessions');
 
   return { sessions: Sessions.findOne(sessionId) };

@@ -11,7 +11,7 @@ class SessionsList extends Component {
     return this.props.sessions.map(session => {
       const { _id, sessionDay, morningSession, eveningSession, journalText  } = session;
       //console.log("SessionDay ", sessionDay);
-      const sessionEditUrl = `/session/${session._id}`;
+      const sessionEditUrl = `/edit_session/${session._id}`;
       const cdate = (moment(sessionDay).format('MMMM Do YYYY'));
       const morning = morningSession?"Yes":"No";
       const evening = eveningSession?"Yes":"No";

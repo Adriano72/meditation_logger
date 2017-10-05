@@ -35,6 +35,9 @@ const Session = Class.create({
           console.log("RESULT: ", result);
         }
       });
+    },
+    update(session, comtent) {
+      return this.update(session._id, { $set: { content } });
     }
   }
 });

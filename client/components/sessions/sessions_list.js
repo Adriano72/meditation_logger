@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Sessions } from '../../../imports/collections/sessions';
+import { Link } from 'react-router';
 import moment from 'moment';
 
 class SessionsList extends Component {
@@ -10,6 +11,7 @@ class SessionsList extends Component {
     return this.props.sessions.map(session => {
       const { _id, sessionDay, morningSession, eveningSession, journalText  } = session;
       //console.log("SessionDay ", sessionDay);
+      const sessionEditUrl = `/session/${session._id}`;
       const cdate = (moment(sessionDay).format('MMMM Do YYYY'));
       const morning = morningSession?"Yes":"No";
       const evening = eveningSession?"Yes":"No";
@@ -19,7 +21,7 @@ class SessionsList extends Component {
 
       return (
         <tr key={_id}>
-          <td>{cdate}</td>
+          <td><Link to={sessionEditUrl}>{cdate}</Link></td>
           <td>{morning}</td>
           <td>{evening}</td>
           <td>{text}</td>

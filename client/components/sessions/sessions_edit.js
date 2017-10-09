@@ -14,23 +14,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 class SessionsEdit extends Component {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      error: '',
-      date: moment()
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(date) {
-    this.setState({
-      date: date
-    });
-  }
-
 
   onSaveClick() {
 
@@ -57,12 +40,13 @@ class SessionsEdit extends Component {
 
   render() {
     console.log("SESSION : ",this.props);
+    const cdate = (moment(this.props.sessions.sessionDay).format('MMMM Do YYYY'));
     return (
-        <div>
+        <div className="container-fluid">
           <div className="form-group">
             <label>Date</label>
             <div>
-              {this.props.sessions.sessionDay}
+              {cdate}
             </div>
 
             <div className="checkbox">
@@ -83,11 +67,18 @@ class SessionsEdit extends Component {
 
           </div>
           <div className="text-danger">{this.state.error}</div>
+          <div className="btn-toolbar">
           <button
             className="btn btn-primary"
             onClick={this.onSaveClick.bind(this)}>
-            Save
+            Update
           </button>
+          <button
+            className="btn btn-danger"
+            onClick={this.onSaveClick.bind(this)}>
+            Delete
+          </button>
+          </div>
           <Alert stack={{limit: 3}} />
         </div>
     )

@@ -15,16 +15,16 @@ import 'react-datepicker/dist/react-datepicker.css';
 class SessionsEdit extends Component {
 
 
-  onSaveClick() {
+  onDataChange() {
 
-    var newSession = new Session();
+    var newSession = new Session(this.props.sessions);
     newSession.insert(
-      moment(this.state.date).startOf('day').format(),
+      moment(this.props.sessions.sessionDay).startOf('day').format(),
       this.refs.morning.checked,
       this.refs.evening.checked,
       this.refs.journal.value
     );
-    Alert.success('Session created', {
+    Alert.success('Session updated', {
       position: 'top-left',
       effect: 'jelly',
       onShow: function () {
@@ -38,9 +38,16 @@ class SessionsEdit extends Component {
 
   }
 
+
+
   render() {
     console.log("SESSION : ",this.props);
+    console.log("CHECKED: ", this.props.sessions.morningSession?"checked":"");
     const cdate = (moment(this.props.sessions.sessionDay).format('MMMM Do YYYY'));
+    const morningSession = this.props.sessions.morningSession?"checked":"";
+    const eveningSession = this.props.sessions.eveningSession?"checked":"";
+    const journalEntry = this.props.sessions.journalText;
+
     return (
         <div className="container-fluid">
           <div className="form-group">
@@ -51,31 +58,28 @@ class SessionsEdit extends Component {
 
             <div className="checkbox">
               <label>
-                <input type="checkbox" ref="morning" value="" />
+                <input type="checkbox" ref="morning" checked={morningSession} onChange={this.onDataChange.bind(this)} />
                 Morning Session Done
               </label>
             </div>
             <div className="checkbox disabled">
               <label>
-                <input type="checkbox" ref="evening" value="" />
+                <input type="checkbox" ref="evening" checked={eveningSession} onChange={this.onDataChange.bind(this)} />
                 Evening Session Done
               </label>
             </div>
             <div><label>Journal</label></div>
-            <textarea className="form-control" ref="journal" rows="4" />
-
-
+            <textarea className="form-control" ref="journal" rows="4" value={journalEntry} onChange={this.onDataChange.bind(this)} />
           </div>
-          <div className="text-danger">{this.state.error}</div>
           <div className="btn-toolbar">
           <button
             className="btn btn-primary"
-            onClick={this.onSaveClick.bind(this)}>
+            onClick={this.onDataChange.bind(this)}>
             Update
           </button>
           <button
             className="btn btn-danger"
-            onClick={this.onSaveClick.bind(this)}>
+            onClick={this.onDataChange.bind(this)}>
             Delete
           </button>
           </div>

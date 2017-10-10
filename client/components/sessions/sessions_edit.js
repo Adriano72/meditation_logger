@@ -14,7 +14,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 class SessionsEdit extends Component {
 
-
   onDataChange() {
 
     var newSession = new Session(this.props.sessions);
@@ -24,23 +23,22 @@ class SessionsEdit extends Component {
       this.refs.evening.checked,
       this.refs.journal.value
     );
-    Alert.success('Session updated', {
-      position: 'top-left',
-      effect: 'jelly',
-      onShow: function () {
-        setTimeout(function(){
-          browserHistory.push('/session_list');
-        }, 2000);
-      },
-      timeout: 1500,
-      offset: 360
-    });
+
+  }
+
+  componentWillMount() {
+    if(_.isUndefined(this.props.sessions)){
+      console.log("COMP WILL MOUNT ", _.isUndefined(this.props.sessions));
+      return browserHistory.push('/session_list');
+    };
 
   }
 
 
 
   render() {
+
+
     console.log("SESSION : ",this.props);
     console.log("CHECKED: ", this.props.sessions.morningSession?"checked":"");
     const cdate = (moment(this.props.sessions.sessionDay).format('MMMM Do YYYY'));
@@ -50,7 +48,11 @@ class SessionsEdit extends Component {
 
     return (
         <div className="container-fluid">
+          <pre>
           <div className="form-group">
+            <h2>Edit Session</h2>
+            <div><mark>Changes are saved instantly upon any change you make here</mark></div>
+
             <label>Date</label>
             <div>
               {cdate}
@@ -72,18 +74,9 @@ class SessionsEdit extends Component {
             <textarea className="form-control" ref="journal" rows="4" value={journalEntry} onChange={this.onDataChange.bind(this)} />
           </div>
           <div className="btn-toolbar">
-          <button
-            className="btn btn-primary"
-            onClick={this.onDataChange.bind(this)}>
-            Update
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={this.onDataChange.bind(this)}>
-            Delete
-          </button>
           </div>
           <Alert stack={{limit: 3}} />
+          </pre>
         </div>
     )
   }

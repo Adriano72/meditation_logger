@@ -37,8 +37,10 @@ const Session = Class.create({
       });
     },
     update(session, content) {
-      console.log("RECEIVED SESSION: ", session);
       return this.update(session._id, { $set: { content } });
+    },
+    delete(session) {
+      return this.remove(session._id);
     }
   }
 });

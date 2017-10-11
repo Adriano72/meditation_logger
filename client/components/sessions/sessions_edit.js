@@ -24,7 +24,7 @@ class SessionsEdit extends Component {
       this.refs.journal.value
     );
 
-  }
+  };
 
   componentWillMount() {
     if(_.isUndefined(this.props.sessions)){
@@ -32,6 +32,12 @@ class SessionsEdit extends Component {
       return browserHistory.push('/session_list');
     };
 
+  };
+
+  deleteSession() {
+    var newSession = new Session(this.props.sessions);
+    newSession.delete(newSession);
+    return browserHistory.push('/session_list');
   }
 
 
@@ -74,6 +80,11 @@ class SessionsEdit extends Component {
             <textarea className="form-control" ref="journal" rows="4" value={journalEntry} onChange={this.onDataChange.bind(this)} />
           </div>
           <div className="btn-toolbar">
+            <button
+              className="btn btn-danger"
+              onClick={this.deleteSession.bind(this)}>
+              Delete
+            </button>
           </div>
           <Alert stack={{limit: 3}} />
           </pre>

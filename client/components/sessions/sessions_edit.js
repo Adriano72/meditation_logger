@@ -4,6 +4,7 @@ import { Link, browserHistory } from 'react-router';
 import DatePicker from 'react-datepicker';
 import { Sessions } from '../../../imports/collections/sessions';
 import moment from 'moment';
+import bootbox from 'bootbox';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
@@ -14,8 +15,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 class SessionsEdit extends Component {
 
-  onDataChange() {
 
+
+  updateSession() {
     var newSession = new Session(this.props.sessions);
     newSession.insert(
       moment(this.props.sessions.sessionDay).startOf('day').format(),
@@ -23,8 +25,44 @@ class SessionsEdit extends Component {
       this.refs.evening.checked,
       this.refs.journal.value
     );
+    Alert.success('Session Updated', {
+      position: 'top-left',
+      effect: 'jelly',
+      onShow: function () {
+        setTimeout(function(){
+          browserHistory.push('/session_list');
+        }, 2000);
+      },
+      timeout: 1500,
+      offset: 450
+    });
 
   };
+
+  confirmDelete(){
+    const presentSession = this.props.sessions;
+    bootbox.confirm({
+        message: "Are you sure you want to delete this session?",
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-success'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-danger'
+            }
+        },
+        callback: function (result) {
+            if(result){
+              console.log("SESSIONS NELLA DIALOG: ", presentSession);
+              var newSession = new Session(presentSession);
+              newSession.delete(newSession);
+              return browserHistory.push('/session_list');
+            };
+        }
+    });
+  }
 
   componentWillMount() {
     if(_.isUndefined(this.props.sessions)){
@@ -34,16 +72,12 @@ class SessionsEdit extends Component {
 
   };
 
-  deleteSession() {
-    var newSession = new Session(this.props.sessions);
-    newSession.delete(newSession);
-    return browserHistory.push('/session_list');
-  }
-
-
-
   render() {
 
+    if(_.isUndefined(this.props.sessions)){
+      //console.log("COMP WILL MOUNT ", _.isUndefined(this.props.sessions));
+      return <div>Updating...</div>;
+    };
 
     console.log("SESSION : ",this.props);
     console.log("CHECKED: ", this.props.sessions.morningSession?"checked":"");
@@ -57,8 +91,6 @@ class SessionsEdit extends Component {
           <pre>
           <div className="form-group">
             <h2>Edit Session</h2>
-            <div><mark>Changes are saved instantly upon any change you make here</mark></div>
-
             <label>Date</label>
             <div>
               {cdate}
@@ -66,23 +98,28 @@ class SessionsEdit extends Component {
 
             <div className="checkbox">
               <label>
-                <input type="checkbox" ref="morning" checked={morningSession} onChange={this.onDataChange.bind(this)} />
+                <input type="checkbox" ref="morning" defaultChecked={morningSession} />
                 Morning Session Done
               </label>
             </div>
             <div className="checkbox disabled">
               <label>
-                <input type="checkbox" ref="evening" checked={eveningSession} onChange={this.onDataChange.bind(this)} />
+                <input type="checkbox" ref="evening" defaultChecked={eveningSession} />
                 Evening Session Done
               </label>
             </div>
             <div><label>Journal</label></div>
-            <textarea className="form-control" ref="journal" rows="4" value={journalEntry} onChange={this.onDataChange.bind(this)} />
+            <textarea className="form-control" ref="journal" rows="4" defaultValue={journalEntry} />
           </div>
           <div className="btn-toolbar">
             <button
+              className="btn btn-primary"
+              onClick={this.updateSession.bind(this)}>
+              Save
+            </button>
+            <button
               className="btn btn-danger"
-              onClick={this.deleteSession.bind(this)}>
+              onClick={this.confirmDelete.bind(this)}>
               Delete
             </button>
           </div>

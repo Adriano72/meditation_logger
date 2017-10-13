@@ -90,11 +90,11 @@ class SessionsEdit extends Component {
         <div className="container-fluid">
           <pre>
           <div className="form-group">
-            <h2>Edit Session</h2>
-            <label>Date</label>
-            <div>
+            <h2>Edit Session</h2><br />
+            <label>Date</label>&nbsp;
+            <span>
               {cdate}
-            </div>
+            </span>
 
             <div className="checkbox">
               <label>

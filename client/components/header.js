@@ -5,8 +5,9 @@ import { Link, browserHistory } from 'react-router';
 class Header extends Component {
   onBindClick(event) {
     event.preventDefault();
-
-    browserHistory.push(`/new_session`);
+    if(Meteor.user()){
+      browserHistory.push(`/new_session`);
+    }
   }
 
   render () {

@@ -7,6 +7,10 @@ import LoggerMain from './components/logger_main';
 import SessionsList from './components/sessions/sessions_list';
 import SessionsEdit from './components/sessions/sessions_edit';
 
+Accounts.ui.config({
+  passwordSignupFields: "USERNAME_AND_EMAIL"
+});
+
 const routes = (
   <Router history={browserHistory}>
     <Route path="/" component={App}>

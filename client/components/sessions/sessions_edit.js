@@ -87,43 +87,43 @@ class SessionsEdit extends Component {
     const journalEntry = this.props.sessions.journalText;
 
     return (
-        <div className="container-fluid">
+        <div className="container-fluid top-buffer">
           <pre>
-          <div className="form-group">
-            <h2>Edit Session</h2><br />
-            <label>Date</label>&nbsp;
-            <span>
-              {cdate}
-            </span>
+            <div className="form-group">
+              <h2>Edit Session</h2><br />
+              <label>Date</label>&nbsp;
+              <span>
+                {cdate}
+              </span>
 
-            <div className="checkbox">
-              <label>
-                <input type="checkbox" ref="morning" defaultChecked={morningSession} />
-                Morning Session Done
-              </label>
+              <div className="checkbox">
+                <label>
+                  <input type="checkbox" ref="morning" defaultChecked={morningSession} />
+                  Morning Session Done
+                </label>
+              </div>
+              <div className="checkbox disabled">
+                <label>
+                  <input type="checkbox" ref="evening" defaultChecked={eveningSession} />
+                  Evening Session Done
+                </label>
+              </div>
+              <div><label>Journal</label></div>
+              <textarea className="form-control" ref="journal" rows="4" defaultValue={journalEntry} />
             </div>
-            <div className="checkbox disabled">
-              <label>
-                <input type="checkbox" ref="evening" defaultChecked={eveningSession} />
-                Evening Session Done
-              </label>
+            <div className="btn-toolbar">
+              <button
+                className="btn btn-primary"
+                onClick={this.updateSession.bind(this)}>
+                Save
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={this.confirmDelete.bind(this)}>
+                Delete
+              </button>
             </div>
-            <div><label>Journal</label></div>
-            <textarea className="form-control" ref="journal" rows="4" defaultValue={journalEntry} />
-          </div>
-          <div className="btn-toolbar">
-            <button
-              className="btn btn-primary"
-              onClick={this.updateSession.bind(this)}>
-              Save
-            </button>
-            <button
-              className="btn btn-danger"
-              onClick={this.confirmDelete.bind(this)}>
-              Delete
-            </button>
-          </div>
-          <Alert stack={{limit: 3}} />
+            <Alert stack={{limit: 3}} />
           </pre>
         </div>
     )

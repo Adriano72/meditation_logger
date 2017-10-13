@@ -72,38 +72,41 @@ class SessionsCreate extends Component {
 
   render() {
     return (
-        <div>
-          <div className="form-group">
-            <label>Date</label>
-            <DatePicker ref="date"
-              selected={this.state.date}
-              onChange={this.handleChange}
-            />
+        <div className="container-fluid top-buffer">
+          <pre>
+            <div className="form-group">
+            <h2>New Session</h2><br />
+              <label>Date</label>
+              <DatePicker ref="date"
+                selected={this.state.date}
+                onChange={this.handleChange}
+              />
 
-            <div className="checkbox">
-              <label>
-                <input type="checkbox" ref="morning" value="" />
-                Morning Session Done
-              </label>
+              <div className="checkbox">
+                <label>
+                  <input type="checkbox" ref="morning" value="" />
+                  Morning Session Done
+                </label>
+              </div>
+              <div className="checkbox disabled">
+                <label>
+                  <input type="checkbox" ref="evening" value="" />
+                  Evening Session Done
+                </label>
+              </div>
+              <div><label>Journal</label></div>
+              <textarea className="form-control" ref="journal" rows="4" />
+
+
             </div>
-            <div className="checkbox disabled">
-              <label>
-                <input type="checkbox" ref="evening" value="" />
-                Evening Session Done
-              </label>
-            </div>
-            <div><label>Journal</label></div>
-            <textarea className="form-control" ref="journal" rows="4" />
-
-
-          </div>
-          <div className="text-danger">{this.state.error}</div>
-          <button
-            className="btn btn-primary"
-            onClick={this.onSaveClick.bind(this)}>
-            Save
-          </button>
-          <Alert stack={{limit: 3}} />
+            <div className="text-danger">{this.state.error}</div>
+            <button
+              className="btn btn-primary"
+              onClick={this.onSaveClick.bind(this)}>
+              Save
+            </button>
+            <Alert stack={{limit: 3}} />
+          </pre>
         </div>
     )
   }

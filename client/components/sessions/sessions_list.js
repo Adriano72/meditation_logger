@@ -1,11 +1,43 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Sessions } from '../../../imports/collections/sessions';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import moment from 'moment';
 
 class SessionsList extends Component {
 
+  constructor(props){
+    super(props);
+    this.state = this.getMeteorData();
+    this.logout = this.logout.bind(this);
+  }
+
+  getMeteorData(){
+    return { isAuthenticated: Meteor.userId() !== null };
+  }
+
+  componentWillMount(){
+    if (!this.state.isAuthenticated) {
+      browserHistory.push('/login');
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    if (!this.state.isAuthenticated) {
+      browserHistory.push('/login');
+    }
+  }
+
+  logout(e){
+    e.preventDefault();
+    Meteor.logout( (err) => {
+        if (err) {
+            console.log( err.reason );
+        } else {
+            browserHistory.push('/login');
+        }
+    });
+  }
 
   renderRows() {
     return this.props.sessions.map(session => {

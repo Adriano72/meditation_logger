@@ -18,7 +18,7 @@ class Header extends Component {
         </div>
         <ul className="nav navbar-nav">
           <li>
-            <Accounts />
+            
           </li>
           <li>
             <a href="#" onClick={this.onBindClick.bind(this)}>New session</a>

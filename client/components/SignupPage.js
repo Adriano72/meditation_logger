@@ -67,7 +67,7 @@ export default class SignupPage extends Component {
                     onSubmit={this.handleSubmit}>
                 <div className="form-group">
                   <input type="text" id="signup-name"
-                        className="form-control input-lg" placeholder="name"/>
+                        className="form-control input-lg" placeholder="Full name"/>
                 </div>
                 <div className="form-group">
                   <input type="text" id="group"

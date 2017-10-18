@@ -18,8 +18,8 @@ ecmascript@0.8.2              # Enable ECMAScript2015+ syntax in app code
 shell-server@0.2.4            # Server-side component of the `meteor shell` command
 
 react-meteor-data
-twbs:bootstrap
 accounts-ui
 accounts-password
 jagi:astronomy
 erasaur:meteor-lodash
+twbs:bootstrap

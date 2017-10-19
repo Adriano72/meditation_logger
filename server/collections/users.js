@@ -15,7 +15,7 @@ Meteor.methods({
                     // Need _id of existing user record so this call must come
                     // after `Accounts.createUser` or `Accounts.onCreate`
                     //[].concat(user);
-                    Roles.addUsersToRoles(id, user.roles, "Meditation and Leadership Oct 2017");
+                    Roles.addUsersToRoles(id, user.roles, user.group);
                 }
 
                 _.extend(user, {id: id});

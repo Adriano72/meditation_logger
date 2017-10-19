@@ -1,30 +1,49 @@
 import React, { Component } from 'react';
 import { Link, browserHistory } from 'react-router';
 import { Accounts } from 'meteor/accounts-base';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
+import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
 
 export default class SignupPage extends Component {
+
   constructor(props){
     super(props);
     this.state = {
-      error: ''
+      error: '',
+      groupSelected: ''
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.updateValue = this.updateValue.bind(this);
   }
 
   handleSubmit(e){
     e.preventDefault();
     let name = document.getElementById("signup-name").value;
     let email = document.getElementById("signup-email").value;
-    let group = document.getElementById("group").value;
     let password = document.getElementById("signup-password").value;
-    this.setState({error: "test"});
+
+    if(name == "" || email == "") {
+      Alert.error('Name and Email are mandatory', {
+        position: 'top-left',
+        effect: 'slide',
+        timeout: 3000,
+        offset: 20
+      });
+
+      return;
+    }
 
 
     var newUserData = {
      username: name,
      email: email,
      password: password,
-     roles: ['student']
+     roles: ['student'],
+     group: this.state.groupSelected.value
     };
 
     Meteor.call('mCreateUser', newUserData, (error, result) => {
@@ -35,21 +54,30 @@ export default class SignupPage extends Component {
          console.log(result);
          browserHistory.push('/login');
     });
-
-    /*
-    Accounts.createUser({email: email, username: name, password: password}, (err) => {
-      if(err){
-        this.setState({
-          error: err.reason
-        });
-      } else {
-        this.props.history.push('/login');
-      }
-    });
-    */
   }
 
+
+  logChange(val) {
+    console.log("Selected: " + JSON.stringify(val));
+  }
+
+  updateValue (newValue) {
+    console.log('State changed to ', newValue);
+		this.setState({
+			groupSelected: newValue,
+		});
+	}
+
+
   render(){
+
+
+
+    var options = [
+      { value: 'Meditation and Leadership Oct 2017', label: 'Meditation and Leadership Oct 2017' }
+    ];
+
+
     const error = this.state.error;
     return (
       <div className="modal show">
@@ -70,8 +98,9 @@ export default class SignupPage extends Component {
                         className="form-control input-lg" placeholder="Full name"/>
                 </div>
                 <div className="form-group">
-                  <input type="text" id="group"
-                        className="form-control input-lg" placeholder="Group"/>
+
+                  <Select name="form-field-name" value={this.state.groupSelected} placeholder="Select..." searchable options={options} onChange={this.updateValue} />
+
                 </div>
                 <div className="form-group">
                   <input type="email" id="signup-email"
@@ -97,6 +126,7 @@ export default class SignupPage extends Component {
             <div className="modal-footer" style={{borderTop: 0}}></div>
           </div>
         </div>
+        <Alert stack={{limit: 3}} />
       </div>
     );
   }

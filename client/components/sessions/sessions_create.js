@@ -42,11 +42,11 @@ class SessionsCreate extends Component {
   onSaveClick() {
     if(this.checkDuplicates()){
       //console.log("A session has already been entered for this day!");
-      Alert.error('A session has already been entered for this day!', {
+      Alert.error('A session is already present for this date!', {
         position: 'top-left',
         effect: 'slide',
         timeout: 3000,
-        offset: 360
+        offset: 20
       });
     } else {
       var newSession = new Session();
@@ -65,7 +65,7 @@ class SessionsCreate extends Component {
           }, 2000);
         },
         timeout: 1500,
-        offset: 360
+        offset: 20
       });
     }
   }

@@ -45,7 +45,7 @@ class Header extends Component {
 
 
             <li className="dropdown">
-              <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{this.props.currentUser.emails?this.props.currentUser.emails[0].address: "Utente"} <span className="caret"></span></a>
+              <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{this.props.currentUser.emails?this.props.currentUser.emails[0].address: "Sign In"} <span className="caret"></span></a>
               <ul className="dropdown-menu">
                 <li><a href="#" onClick={this.logout}>Logout</a></li>
               </ul>

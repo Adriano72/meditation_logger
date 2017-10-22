@@ -8,6 +8,8 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
 
+import courses from '../../data/courses'
+
 export default class SignupPage extends Component {
 
   constructor(props){
@@ -50,9 +52,20 @@ export default class SignupPage extends Component {
         if (error) {
              console.log(error);
               return;
-         }
-         console.log(result);
-         browserHistory.push('/login');
+        }
+        Alert.success('User created, you can now login.', {
+          position: 'top-left',
+          effect: 'jelly',
+          onShow: function () {
+            setTimeout(function(){
+              console.log("Result: ", result);
+              browserHistory.push('/login');
+            }, 2000);
+          },
+          timeout: 1500,
+          offset: 20
+        });
+
     });
   }
 
@@ -71,10 +84,16 @@ export default class SignupPage extends Component {
 
   render(){
 
+    var coursesList = [];
+
+    _.each(courses, (data, key) => {
+      coursesList.push({value: data.courseName, label: data.courseName});
+    });
 
 
     var options = [
-      { value: 'Meditation and Leadership Oct 2017', label: 'Meditation and Leadership Oct 2017' }
+      { value: 'Meditation and Leadership Oct 2017', label: 'Meditation and Leadership Oct 2017' },
+      { value: 'Dublin Medical School Sept 2017', label: 'Dublin Medical School Sept 2017' }
     ];
 
 
@@ -99,7 +118,7 @@ export default class SignupPage extends Component {
                 </div>
                 <div className="form-group">
 
-                  <Select name="form-field-name" value={this.state.groupSelected} placeholder="Select..." searchable options={options} onChange={this.updateValue} />
+                  <Select name="form-field-name" value={this.state.groupSelected} placeholder="Select..." searchable options={coursesList} onChange={this.updateValue} />
 
                 </div>
                 <div className="form-group">

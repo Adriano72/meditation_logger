@@ -10,7 +10,7 @@ class SessionsList extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isAuthenticated: this.getAuthState(),
+      isAdmin: this.getAdminState(),
       rateOfSuccess: "Computing..."
     }
     setTimeout(() => {
@@ -19,13 +19,18 @@ class SessionsList extends Component {
 
   }
 
-  getAuthState(){
-    return Meteor.userId() !== null ;
+  getAdminState(){
+    var loggedInUser = Meteor.user();
+
+    if ( !Roles.userIsInRole(loggedInUser, 'admin', 'Meditation and Leadership Oct 2017') ) {
+      return false
+    }
+    return true
   }
 
   componentWillMount(){
-    if (!this.state.isAuthenticated) {
-      browserHistory.push('/login');
+    if (!this.state.isAdmin) {
+      browserHistory.push('/session_list');
     }
   }
 
@@ -64,7 +69,7 @@ class SessionsList extends Component {
   }
 
   componentWillUpdate(prevProps, prevState){
-    if (!this.state.isAuthenticated) {
+    if (!this.state.isAdmin) {
       browserHistory.push('/login');
     };
 
@@ -99,11 +104,11 @@ class SessionsList extends Component {
   }
 
   render() {
-
+    const userName = Meteor.users.find().fetch()[0].username;
     return (
       <div className="container-fluid top-buffer">
         <pre>
-          <span><h2>Sessions archive</h2></span><h4>Percentage of Success: <mark>{this.state.rateOfSuccess}</mark></h4><br />
+          <span><h2>Sessions entered by {userName}</h2></span><h4>Percentage of Success: <mark>{this.state.rateOfSuccess}</mark></h4><br />
           <table className="table">
             <thead>
               <tr>
@@ -123,7 +128,9 @@ class SessionsList extends Component {
   }
 }
 
-export default createContainer(() => {
-  Meteor.subscribe('sessions');
-  return { sessions: Sessions.find({}, { sort: { sessionDay: -1 } }).fetch() };
+export default createContainer((props) => {
+  console.log("PROPS PARAMS: ", props.params.idStudent);
+  const p_student = props.params.idStudent;
+  Meteor.subscribe('user_sessions_for_admins');
+  return { sessions: Sessions.find({ ownerId: props.params.idStudent }, { sort: { sessionDay: -1 } }).fetch() };
 }, SessionsList);

@@ -7,4 +7,13 @@ Meteor.startup(() => {
   Meteor.publish('sessions', function() {
     return Sessions.find({ ownerId: this.userId });
   });
+
+  Meteor.publish('user_sessions_for_admins', function(userid) {
+    return Sessions.find();
+  });
+
+  Meteor.publish('allUsers', function () {
+    return Meteor.users.find();
+  });
+
 });

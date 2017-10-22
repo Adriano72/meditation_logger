@@ -23,13 +23,22 @@ class Header extends Component {
     });
   }
 
+  openStudentsList() {
+    event.preventDefault();
+    browserHistory.push('/students_list');
+  }
 
+  renderAdminMenu(){
+    var loggedInUser = Meteor.user();
+    console.log("USER: ", Meteor.user());
+    if ( Roles.userIsInRole(loggedInUser, 'admin', 'Meditation and Leadership Oct 2017') ) {
+     return (<a href="#" onClick={this.openStudentsList.bind(this)}>Students list</a>)// NOTE: This example assumes the user is not using groups.
+    }
+    return;
+  }
 
   render () {
-
-
     return (
-
       <nav className="nav navbar-default">
         <div className="container-fluid">
           <div className="navbar-header">
@@ -37,21 +46,17 @@ class Header extends Component {
           </div>
           <ul className="nav navbar-nav">
             <li>
-              <a href="#" onClick={this.onBindClick.bind(this)}>New session</a>
+              <a href="#" onClick={this.onBindClick.bind(this)}>Add Session</a>
             </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
-
-
-
+            <li>{this.renderAdminMenu()}</li>
             <li className="dropdown">
-              <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{this.props.currentUser.emails?this.props.currentUser.emails[0].address: "Sign In"} <span className="caret"></span></a>
+              <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{this.props.currentUser.emails?this.props.currentUser.emails[0].address: "Sign In"}<span className="caret"></span></a>
               <ul className="dropdown-menu">
                 <li><a href="#" onClick={this.logout}>Logout</a></li>
               </ul>
             </li>
-
-
           </ul>
         </div>
       </nav>

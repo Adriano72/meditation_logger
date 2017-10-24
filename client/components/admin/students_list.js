@@ -22,6 +22,10 @@ class StudentsList extends Component {
     return true
   }
 
+  filterByGroup() {
+
+  }
+
   componentWillMount(){
     if (!this.state.isAdmin) {
       browserHistory.push('/session_list');
@@ -48,12 +52,12 @@ class StudentsList extends Component {
             </div>
         </div>)
 
-
   }
 
 
   renderRows() {
-    let users = this.props.allUsers;
+    var users = this.props.allUsers;
+    //users = users.find({ 'username': 'Salma Ayek' });
     console.log("*** RENDER FUNCTION *** STATE IS: ", this.state);
 
     return users.map(user => {
@@ -88,6 +92,11 @@ class StudentsList extends Component {
               {this.renderRows()}
             </tbody>
           </table>
+          <button
+            className="btn btn-warning"
+            onClick={this.filterByGroup.bind(this)}>
+            Filter
+          </button>
         </pre>
       </div>
     );

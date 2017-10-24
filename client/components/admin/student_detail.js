@@ -76,13 +76,17 @@ class SessionsList extends Component {
     //this.calculateSuccessRate();
   }
 
+  printPage() {
+    window.print();
+  }
+
   renderRows() {
 
     console.log("*** RENDER FUNCTION *** STATE IS: ", this.state);
     return this.props.sessions.map(session => {
       const { _id, sessionDay, morningSession, eveningSession, journalText  } = session;
-      //console.log("SessionDay ", sessionDay);
-      const sessionEditUrl = `/edit_session/${session._id}`;
+      console.log("SESSION ID $$$$$$$$$ ", session._id);
+      const sessionEditUrl = `/view_single_session/${session._id}`;
       const cdate = (moment(sessionDay).format('MMMM Do YYYY'));
       const morning = morningSession?"Yes":"No";
       const evening = eveningSession?"Yes":"No";
@@ -122,6 +126,18 @@ class SessionsList extends Component {
               {this.renderRows()}
             </tbody>
           </table>
+          <div className="btn-toolbar">
+            <button
+              className="btn btn-default"
+              onClick={browserHistory.goBack}>
+              Back
+            </button>
+            <button
+              className="btn btn-warning"
+              onClick={this.printPage.bind(this)}>
+              Print
+            </button>
+          </div>
         </pre>
       </div>
     );

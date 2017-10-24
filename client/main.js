@@ -10,6 +10,7 @@ import SessionsList from './components/sessions/sessions_list';
 import SessionsEdit from './components/sessions/sessions_edit';
 import StudentsList from './components/admin/students_list';
 import StudentDetail from './components/admin/student_detail';
+import ViewSingleSession from './components/admin/view_single_session';
 
 Accounts.ui.config({
   passwordSignupFields: "USERNAME_AND_EMAIL"
@@ -26,6 +27,7 @@ const routes = (
       <Route path="students_list" component={StudentsList} />
       <Route path="edit_session/:sessionId" component={SessionsEdit} />
       <Route path="student_detail/:idStudent" component={StudentDetail} />
+      <Route path="view_single_session/:sessionId" component={ViewSingleSession} />
     </Route>
   </Router>
 )

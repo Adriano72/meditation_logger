@@ -108,7 +108,7 @@ class SessionsList extends Component {
   }
 
   render() {
-    const userName = Meteor.users.find().fetch()[0].username;
+    const userName = Meteor.users.find({_id: this.props.params.idStudent}).fetch()[0].username;
     return (
       <div className="container-fluid top-buffer">
         <pre>

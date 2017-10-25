@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Link, browserHistory } from 'react-router';
+import Select from 'react-select';
 import courses from '../../../data/courses';
 
 class StudentsList extends Component {
@@ -9,8 +10,12 @@ class StudentsList extends Component {
     super(props);
     this.state = {
       isAdmin: this.getAdminState(),
+      groupSelected: 'all',
+      userCollection: null,
       rateOfSuccess: "Computing..."
-    }
+    };
+    this.updateValue = this.updateValue.bind(this);
+    //this.componentDidUpdate = this.componentDidUpdate.bind(this);
   }
 
   getAdminState(){
@@ -22,8 +27,53 @@ class StudentsList extends Component {
     return true
   }
 
-  filterByGroup() {
+  updateValue (newValue) {
+    console.log('NEW VALUE ', newValue);
+    console.log('State was ', this.state.groupSelected);
+    const passedState = newValue.label;
+		this.setState({
+			groupSelected: passedState,
+		});
+    console.log('State changed to ', this.state.groupSelected);
 
+	}
+
+  shouldComponentUpdate(nextProps, nextState){
+    console.log('SHOULD COMPONENT UPDATE OLD ', this.state);
+    console.log('SHOULD COMPONENT UPDATE NEXT ', nextState);
+    console.log('SONO UGUALI? ', this.state.userCollection == nextState.userCollection);
+
+    if(this.state.userCollection == nextState.userCollection){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+
+    if( this.state.groupSelected !== "all" && this.state.groupSelected !== prevState.groupSelected){
+
+      console.log('COMPONENT DID UPDATE');
+      let filteredUSers = [];
+      let t_state = this.state.groupSelected;
+
+      _.each(this.state.userCollection, function(t_user){
+        if(Roles.userIsInRole(t_user,['student'], t_state)){
+          console.log('PRESENTE: ', t_user, 'IN ',t_state);
+          filteredUSers.push(t_user);
+        }else{
+          console.log('NON PRESENTE: ', t_user, 'IN ',t_state);
+        };
+      });
+
+      this.setState({
+        userCollection: filteredUSers,
+      });
+
+    }else{
+      console.log('COMPONENT DID NOT UPDATE');
+    }
   }
 
   componentWillMount(){
@@ -32,54 +82,56 @@ class StudentsList extends Component {
     }
   }
 
-  testRender() {
-
-        let users = this.props.allUsers;
-        console.log("PROP USERS: ",users);
-        return (<div>
-            <h4>Students list</h4>
-
-            <div>
-                {users.map((user)=>{
-                    if ('emails' in user ) {
-                        email = user.emails[0].address;
-                    } else {
-                        email = '?'
-                    }
-                    return <div key={user._id}>{user._id} - {email}</div>
-                })
-                }
-            </div>
-        </div>)
-
+  componentWillReceiveProps(nextProps){
+    console.log('NEXT PROPS!!!!!!!!!!!!!!!!!!', nextProps);
+    this.setState({
+      userCollection: nextProps.allUsers,
+    });
+    //console.log('STATE IS ////////////: ', this.state);
   }
 
-
   renderRows() {
-    var users = this.props.allUsers;
-    //users = users.find({ 'username': 'Salma Ayek' });
-    console.log("*** RENDER FUNCTION *** STATE IS: ", this.state);
+    var users = this.state.userCollection;
+    if(users){
+      return users.map(user => {
+  //var userIsInSelectedRole = Roles.userIsInRole(user, 'student', Roles.GLOBAL_GROUP);
+        let slectedGroup = (this.state.groupSelected == "all")?Roles.GLOBAL_GROUP:this.state.groupSelected;
+        var userIsInSelectedRole = Roles.userIsInRole(user, ['student'], slectedGroup);
 
-    return users.map(user => {
-      const userViewUrl = `/student_detail/${user._id}`;
-      const group = Object.keys(user.roles)[0];
-      const email = user.emails[0].address;
-      return (
-        <tr key={user._id}>
-          <td><Link to={userViewUrl}>{user.username}</Link></td>
-          <td>{email}</td>
-          <td>{group}</td>
-        </tr>
-      )
-    });
+        if(userIsInSelectedRole || this.state.groupSelected == "all"){
+
+          const userViewUrl = `/student_detail/${user._id}`;
+          const group = Object.keys(user.roles)[0];
+          const email = user.emails[0].address;
+          return (
+            <tr key={user._id}>
+              <td><Link to={userViewUrl}>{user.username}</Link></td>
+              <td>{email}</td>
+              <td>{group}</td>
+            </tr>
+          )
+        }
+      });
+    }
   };
 
   render() {
+
+    var coursesList = [];
+
+    _.each(courses, (data, key) => {
+      coursesList.push({value: data.courseName, label: data.courseName});
+    });
 
     return (
       <div className="container-fluid top-buffer">
         <pre>
           <span><h2>Students List</h2></span><br />
+            <div className="form-group">
+
+              <Select name="form-field-name" value={this.state.groupSelected} placeholder="Select..." searchable options={coursesList} onChange={this.updateValue} />
+
+            </div>
           <table className="table">
             <thead>
               <tr>
@@ -92,11 +144,7 @@ class StudentsList extends Component {
               {this.renderRows()}
             </tbody>
           </table>
-          <button
-            className="btn btn-warning"
-            onClick={this.filterByGroup.bind(this)}>
-            Filter
-          </button>
+
         </pre>
       </div>
     );

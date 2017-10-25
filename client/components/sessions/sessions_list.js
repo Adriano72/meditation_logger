@@ -37,8 +37,6 @@ class SessionsList extends Component {
     if(!this.state.isAuthenticated) {
       return;
     }
-
-    console.log(">>>>>>>>>> IS FUNCTION >>>>>>>>>>>>>>>>>>><")
     const userGroup = Object.keys( Meteor.users.find().fetch()[0].roles )[0];
 
     const groupData = _.find(courses, function(o){

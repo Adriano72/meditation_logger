@@ -16,6 +16,7 @@ Meteor.methods({
                     // after `Accounts.createUser` or `Accounts.onCreate`
                     //[].concat(user);
                     Roles.addUsersToRoles(id, user.roles, user.group);
+                    Roles.setUserRoles(id, user.roles, Roles.GLOBAL_GROUP);
                 }
 
                 _.extend(user, {id: id});

@@ -30,7 +30,7 @@ class Header extends Component {
 
   renderAdminMenu(){
     var loggedInUser = Meteor.user();
-    console.log("USER: ", Meteor.user());
+    console.log("USER - header.js: ", Meteor.user());
     if ( Roles.userIsInRole(loggedInUser, 'admin', 'Meditation and Leadership Oct 2017') ) {
      return (<a href="#" onClick={this.openStudentsList.bind(this)}>Students list</a>)// NOTE: This example assumes the user is not using groups.
     }

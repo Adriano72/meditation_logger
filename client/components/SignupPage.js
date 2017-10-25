@@ -8,7 +8,7 @@ import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
 
-import courses from '../../data/courses'
+import courses from '../../data/courses';
 
 export default class SignupPage extends Component {
 
@@ -89,13 +89,6 @@ export default class SignupPage extends Component {
     _.each(courses, (data, key) => {
       coursesList.push({value: data.courseName, label: data.courseName});
     });
-
-
-    var options = [
-      { value: 'Meditation and Leadership Oct 2017', label: 'Meditation and Leadership Oct 2017' },
-      { value: 'Dublin Medical School Sept 2017', label: 'Dublin Medical School Sept 2017' }
-    ];
-
 
     const error = this.state.error;
     return (

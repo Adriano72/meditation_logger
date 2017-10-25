@@ -11,7 +11,7 @@ class StudentsList extends Component {
     this.state = {
       isAdmin: this.getAdminState(),
       groupSelected: 'all',
-      userCollection: null,
+      userCollection: props.allUsers,
       rateOfSuccess: "Computing..."
     };
     this.updateValue = this.updateValue.bind(this);
@@ -30,14 +30,17 @@ class StudentsList extends Component {
   updateValue (newValue) {
     console.log('NEW VALUE ', newValue);
     console.log('State was ', this.state.groupSelected);
-    const passedState = newValue.label;
+    const passedState = newValue?newValue.label:'all';
+
+
 		this.setState({
 			groupSelected: passedState,
+      userCollection: this.props.allUsers
 		});
     console.log('State changed to ', this.state.groupSelected);
 
 	}
-
+  /*
   shouldComponentUpdate(nextProps, nextState){
     console.log('SHOULD COMPONENT UPDATE OLD ', this.state);
     console.log('SHOULD COMPONENT UPDATE NEXT ', nextState);
@@ -49,11 +52,12 @@ class StudentsList extends Component {
       return true;
     }
   }
+  */
 
   componentDidUpdate(prevProps, prevState){
 
-    if( this.state.groupSelected !== "all" && this.state.groupSelected !== prevState.groupSelected){
-
+    if(this.state.groupSelected != prevState.groupSelected){
+      console.log("DIFFERENT");
       console.log('COMPONENT DID UPDATE');
       let filteredUSers = [];
       let t_state = this.state.groupSelected;
@@ -71,34 +75,52 @@ class StudentsList extends Component {
         userCollection: filteredUSers,
       });
 
+
     }else{
-      console.log('COMPONENT DID NOT UPDATE');
+      console.log("SAME");
     }
+
+    /*
+    console.log('COMPONENT DID UPDATE');
+    let filteredUSers = [];
+    let t_state = this.state.groupSelected;
+
+    _.each(this.state.userCollection, function(t_user){
+      if(Roles.userIsInRole(t_user,['student'], t_state)){
+        console.log('PRESENTE: ', t_user, 'IN ',t_state);
+        filteredUSers.push(t_user);
+      }else{
+        console.log('NON PRESENTE: ', t_user, 'IN ',t_state);
+      };
+    });
+
+    this.setState({
+      userCollection: filteredUSers,
+    });
+    */
+
+  }
+
+  componentWillReceiveProps(nextProps){
+    console.log('*** PROPS ALL USERS ***: ', nextProps.allUsers);
+    this.setState({
+      userCollection: nextProps.allUsers,
+    });
   }
 
   componentWillMount(){
+
     if (!this.state.isAdmin) {
       browserHistory.push('/session_list');
     }
   }
 
-  componentWillReceiveProps(nextProps){
-    console.log('NEXT PROPS!!!!!!!!!!!!!!!!!!', nextProps);
-    this.setState({
-      userCollection: nextProps.allUsers,
-    });
-    //console.log('STATE IS ////////////: ', this.state);
-  }
-
   renderRows() {
     var users = this.state.userCollection;
+
+    console.log('*** USERS ***: ', users);
     if(users){
       return users.map(user => {
-  //var userIsInSelectedRole = Roles.userIsInRole(user, 'student', Roles.GLOBAL_GROUP);
-        let slectedGroup = (this.state.groupSelected == "all")?Roles.GLOBAL_GROUP:this.state.groupSelected;
-        var userIsInSelectedRole = Roles.userIsInRole(user, ['student'], slectedGroup);
-
-        if(userIsInSelectedRole || this.state.groupSelected == "all"){
 
           const userViewUrl = `/student_detail/${user._id}`;
           const group = Object.keys(user.roles)[0];
@@ -110,14 +132,14 @@ class StudentsList extends Component {
               <td>{group}</td>
             </tr>
           )
-        }
+
       });
     }
   };
 
   render() {
 
-    var coursesList = [];
+    let coursesList = [];
 
     _.each(courses, (data, key) => {
       coursesList.push({value: data.courseName, label: data.courseName});
@@ -127,7 +149,7 @@ class StudentsList extends Component {
       <div className="container-fluid top-buffer">
         <pre>
           <span><h2>Students List</h2></span><br />
-            <div className="form-group">
+            <div className="form-group" >
 
               <Select name="form-field-name" value={this.state.groupSelected} placeholder="Select..." searchable options={coursesList} onChange={this.updateValue} />
 

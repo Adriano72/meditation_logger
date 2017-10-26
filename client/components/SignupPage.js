@@ -28,8 +28,8 @@ export default class SignupPage extends Component {
     let email = document.getElementById("signup-email").value;
     let password = document.getElementById("signup-password").value;
 
-    if(name == "" || email == "") {
-      Alert.error('Name and Email are mandatory', {
+    if(name == "" || email == "" || this.state.groupSelected == '') {
+      Alert.error('Name, Email and Group are mandatory', {
         position: 'top-left',
         effect: 'slide',
         timeout: 3000,
@@ -111,7 +111,7 @@ export default class SignupPage extends Component {
                 </div>
                 <div className="form-group">
 
-                  <Select name="form-field-name" value={this.state.groupSelected} placeholder="Select..." searchable options={coursesList} onChange={this.updateValue} />
+                  <Select name="form-field-name" value={this.state.groupSelected} placeholder="Select a Group" searchable options={coursesList} onChange={this.updateValue} />
 
                 </div>
                 <div className="form-group">

@@ -67,7 +67,22 @@ class SessionsList extends Component {
       });
     }
   }
-
+  componentDidUpdate(){
+    new Chartist.Line('.ct-chart', {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      series: [
+        [12, 9, 7, 8, 5],
+        [2, 1, 3.5, 7, 3],
+        [1, 3, 4, 5, 6]
+      ]
+    }, {
+      fullWidth: false,
+      chartPadding: {
+        right: 40
+      }
+    });
+  }
+  
   componentWillUpdate(prevProps, prevState){
     if (!this.state.isAdmin) {
       browserHistory.push('/login');
@@ -113,6 +128,7 @@ class SessionsList extends Component {
       <div className="container-fluid top-buffer">
         <pre>
           <span><h2>Sessions entered by {userName}</h2></span><h4>Percentage of Success: <mark>{this.state.rateOfSuccess}</mark></h4><br />
+          <div className="ct-chart"></div>
           <table className="table">
             <thead>
               <tr>

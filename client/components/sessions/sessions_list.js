@@ -31,6 +31,28 @@ class SessionsList extends Component {
 
   componentDidUpdate(prevProps, prevState){
     this.calculateSuccessRate();
+
+    console.log("PROPS: ", this.props.sessions);
+    const daysAxis = this.props.sessions.map(session => {
+
+      return moment(session.sessionDay).date();
+
+    });
+    console.log("AXIS X: ", lodash.reverse(daysAxis));
+
+    new Chartist.Line('.ct-chart', {
+      labels: daysAxis,
+      series: [
+        [2, 1, 2, 0, 2],
+
+        [1, 3, 4, 5, 6]
+      ]
+    }, {
+      fullWidth: false,
+      chartPadding: {
+        right: 40
+      }
+    });
   }
 
   calculateSuccessRate(){
@@ -76,7 +98,6 @@ class SessionsList extends Component {
 
   renderRows() {
 
-    console.log("*** RENDER FUNCTION *** STATE IS: ", this.state);
     return this.props.sessions.map(session => {
       const { _id, sessionDay, morningSession, eveningSession, journalText  } = session;
       //console.log("SessionDay ", sessionDay);
@@ -97,8 +118,6 @@ class SessionsList extends Component {
         </tr>
       )
     });
-
-
   }
 
   render() {
@@ -107,6 +126,7 @@ class SessionsList extends Component {
       <div className="container-fluid top-buffer">
         <pre>
           <span><h2>Sessions archive</h2></span><h4>Percentage of Success: <mark>{this.state.rateOfSuccess}</mark></h4><br />
+          <div className="ct-chart"></div>
           <table className="table">
             <thead>
               <tr>

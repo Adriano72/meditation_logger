@@ -16,7 +16,6 @@ class SessionsList extends Component {
     setTimeout(() => {
       this.calculateSuccessRate();
     }, 2000);
-
   }
 
   getAuthState(){
@@ -30,9 +29,42 @@ class SessionsList extends Component {
   }
 
   componentDidUpdate(prevProps, prevState){
+
     this.calculateSuccessRate();
 
-    console.log("PROPS: ", this.props.sessions);
+    const userGroup = Object.keys( Meteor.users.find().fetch()[0].roles )[0];
+    const groupData = _.find(courses, function(o){
+      return o.courseName == userGroup
+    });
+
+    const startDate = moment(groupData.startDate);
+    const endCourse = moment(groupData.endDate);
+    const endDate = (moment().isBefore(endCourse))?moment():endCourse;
+    const ascissa = [];
+    const sessionsThatDay = [];
+
+    for (var m = moment(startDate); m.isBefore(endDate); m.add('days', 1)) {
+        //console.log(m.format('MMM Do'));
+        ascissa.push(m.format('MMM D'));
+
+        var t_date = moment(m).startOf('day').format();
+
+        let foundEntry = _.find(this.props.sessions, function(value, key){
+          return moment(value.sessionDay).startOf('day').isSame(t_date)
+        });
+
+        if(foundEntry){
+          let totSessionsToday = 0;
+          if(foundEntry.morningSession) totSessionsToday++;
+          if(foundEntry.eveningSession) totSessionsToday++;
+          sessionsThatDay.push(totSessionsToday);
+        }else {
+          sessionsThatDay.push(0);
+        }
+
+    };
+    console.log("sessionsThatDay: "+sessionsThatDay);
+
     const daysAxis = this.props.sessions.map(session => {
 
       return moment(session.sessionDay).date();
@@ -40,19 +72,55 @@ class SessionsList extends Component {
     });
     console.log("AXIS X: ", lodash.reverse(daysAxis));
 
-    new Chartist.Line('.ct-chart', {
-      labels: daysAxis,
-      series: [
-        [2, 1, 2, 0, 2],
+    //_-----------------------
+    console.log("PROPS: "+ JSON.stringify(this.props.sessions) );
 
-        [1, 3, 4, 5, 6]
-      ]
-    }, {
-      fullWidth: false,
-      chartPadding: {
-        right: 40
-      }
+    new Chartist.Line('.ct-chart',{
+        labels: ascissa,
+        series: [
+          sessionsThatDay
+        ]
+      },
+      {
+        fullWidth: false,
+        height: 200,
+        chartPadding: {
+          right: 40,
+          left: 40,
+          bottom: 50
+        },
+        axisY: {
+          onlyInteger: true,
+          offset: 1
+        },
+        plugins: [
+          Chartist.plugins.ctAxisTitle({
+            axisX: {
+              axisTitle: 'Days',
+              axisClass: 'ct-axis-title',
+              offset: {
+                x: 0,
+                y: 50
+              },
+              textAnchor: 'middle'
+            },
+            axisY: {
+              axisTitle: 'Sessions',
+              axisClass: 'ct-axis-title',
+              offset: {
+                x: 0,
+                y: 0
+              },
+              textAnchor: 'middle',
+              flipTitle: false
+            }
+          })
+        ]
     });
+  }
+
+  calculateSuccessRateDayByDayBasys(p_day){
+
   }
 
   calculateSuccessRate(){
@@ -65,9 +133,7 @@ class SessionsList extends Component {
       return o.courseName == userGroup
     });
 
-    const firstDay = moment(groupData.startDate);
-
-    const startDate = moment(firstDay);
+    const startDate = moment(groupData.startDate);
     const endDate = moment();
     const duration = moment.duration(endDate.diff(startDate));
     var sessioniDisponibili = 2*(Math.round(Math.abs(duration.asDays()))); // Giorni trascorsi dall'inizio del corso

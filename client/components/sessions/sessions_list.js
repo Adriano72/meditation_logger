@@ -63,17 +63,17 @@ class SessionsList extends Component {
         }
 
     };
-    console.log("sessionsThatDay: "+sessionsThatDay);
+    //console.log("sessionsThatDay: "+sessionsThatDay);
 
     const daysAxis = this.props.sessions.map(session => {
 
       return moment(session.sessionDay).date();
 
     });
-    console.log("AXIS X: ", lodash.reverse(daysAxis));
+    //console.log("AXIS X: ", lodash.reverse(daysAxis));
 
     //_-----------------------
-    console.log("PROPS: "+ JSON.stringify(this.props.sessions) );
+    //console.log("PROPS: "+ JSON.stringify(this.props.sessions) );
 
     new Chartist.Line('.ct-chart',{
         labels: ascissa,

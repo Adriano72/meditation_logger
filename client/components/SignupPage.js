@@ -7,7 +7,6 @@ import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
 import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
-
 import courses from '../../data/courses';
 
 export default class SignupPage extends Component {
@@ -75,7 +74,6 @@ export default class SignupPage extends Component {
   }
 
   updateValue (newValue) {
-    console.log('State changed to ', newValue);
 		this.setState({
 			groupSelected: newValue,
 		});

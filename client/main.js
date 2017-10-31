@@ -9,8 +9,10 @@ import SignupPage from './components/SignupPage';
 import SessionsList from './components/sessions/sessions_list';
 import SessionsEdit from './components/sessions/sessions_edit';
 import StudentsList from './components/admin/students_list';
+import AnnouncementsList from './components/announcements/announcements_list';
 import StudentDetail from './components/admin/student_detail';
 import ViewSingleSession from './components/admin/view_single_session';
+import AnnouncementsCreate from './components/announcements/announcements_create';
 
 Accounts.ui.config({
   passwordSignupFields: "USERNAME_AND_EMAIL"
@@ -23,7 +25,9 @@ const routes = (
       <Route path="login" component={LoginPage}/>
       <Route path="signup" component={SignupPage}/>
       <Route path="session_list" component={SessionsList} />
+      <Route path="announcements_list" component={AnnouncementsList} />
       <Route path="new_session" component={LoggerMain} />
+      <Route path="new_announcement" component={AnnouncementsCreate} />
       <Route path="students_list" component={StudentsList} />
       <Route path="edit_session/:sessionId" component={SessionsEdit} />
       <Route path="student_detail/:idStudent" component={StudentDetail} />

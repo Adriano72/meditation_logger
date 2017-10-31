@@ -1,21 +1,24 @@
 import React, { Component } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Link, browserHistory } from 'react-router';
+import { Announcements } from '../../../imports/collections/announcements';
 import Select from 'react-select';
+import moment from 'moment';
 import courses from '../../../data/courses';
 
-class StudentsList extends Component {
+class AnnouncementsList extends Component {
 
   constructor(props){
     super(props);
     this.state = {
       isAdmin: this.getAdminState(),
       groupSelected: 'all',
-      userCollection: props.allUsers,
+      announcementCollection: props.announcements,
       rateOfSuccess: "Computing..."
     };
     this.updateValue = this.updateValue.bind(this);
-    this.sortListAlphabetically = this.sortListAlphabetically.bind(this);
+    //this.renderSelectGroupControl = this.renderSelectGroupControl.bind(this);
+    //this.sortListAlphabetically = this.sortListAlphabetically.bind(this);
   }
 
   getAdminState(){
@@ -35,21 +38,21 @@ class StudentsList extends Component {
 
 		this.setState({
 			groupSelected: passedState,
-      userCollection: this.props.allUsers
+      announcementCollection: this.props.announcements
 		});
     console.log('State changed to ', this.state.groupSelected);
 
 	}
 
   componentDidUpdate(prevProps, prevState){
-
+    /*
     if(this.state.groupSelected != prevState.groupSelected){
       console.log("DIFFERENT");
       console.log('COMPONENT DID UPDATE');
       let filteredUSers = [];
       let t_state = this.state.groupSelected;
 
-      _.each(this.state.userCollection, function(t_user){
+      _.each(this.state.announcementCollection, function(t_user){
         if(Roles.userIsInRole(t_user,['student'], t_state)){
           console.log('PRESENTE: ', t_user, 'IN ',t_state);
           filteredUSers.push(t_user);
@@ -59,48 +62,73 @@ class StudentsList extends Component {
       });
 
       this.setState({
-        userCollection: this.sortListAlphabetically(filteredUSers),
+        announcementCollection: this.sortListAlphabetically(filteredUSers),
       });
 
 
     }else{
       console.log("SAME");
     }
+    */
 
   }
 
+  /*
   sortListAlphabetically(p_list){
     return _.sortBy(p_list, ['username']);
   }
+    */
 
   componentWillReceiveProps(nextProps){
     this.setState({
-      userCollection: this.sortListAlphabetically(nextProps.allUsers),
+      //announcementCollection: this.sortListAlphabetically(nextprops.announcements),
+      announcementCollection: nextProps.announcements,
     });
   }
+
 
   componentWillMount(){
 
     if (!this.state.isAdmin) {
-      browserHistory.push('/session_list');
+      //browserHistory.push('/session_list');
+    }
+  }
+
+  renderSelectGroupControl(){
+    if (this.state.isAdmin){
+      let coursesList = [];
+
+      _.each(courses, (data, key) => {
+        coursesList.push({value: data.courseName, label: data.courseName});
+      });
+
+      return(
+        <div className="form-group" >
+          <Select name="form-field-name" value={this.state.groupSelected} placeholder="Filter by group" searchable options={coursesList} onChange={this.updateValue} />
+        </div>
+      );
     }
   }
 
   renderRows() {
-    var users = this.state.userCollection;
+    var announcements = this.state.announcementCollection;
 
-    console.log('*** USERS ***: ', users);
-    if(users){
-      return users.map(user => {
+    console.log('*** ANNOUNCEMENTS ***: ', announcements);
+    if(announcements){
 
-          const userViewUrl = `/student_detail/${user._id}`;
-          const group = Object.keys(user.roles)[0];
-          const email = user.emails[0].address;
+
+
+      return announcements.map(announcement => {
+
+          const userViewUrl = `/student_detail/${announcement._id}`;
+          const cdate = (moment(announcement.creationDate).format('MMMM Do YYYY'));
+          //const group = Object.keys(user.roles)[0];
+          //const body = user.emails[0].address;
           return (
-            <tr key={user._id}>
-              <td><Link to={userViewUrl}>{user.username}</Link></td>
-              <td>{email}</td>
-              <td>{group}</td>
+            <tr key={announcement._id}>
+              <td>{cdate}</td>
+              <td>{announcement.title}</td>
+              <td>{announcement.body}</td>
             </tr>
           )
 
@@ -110,27 +138,19 @@ class StudentsList extends Component {
 
   render() {
 
-    let coursesList = [];
 
-    _.each(courses, (data, key) => {
-      coursesList.push({value: data.courseName, label: data.courseName});
-    });
 
     return (
       <div className="container-fluid top-buffer">
         <pre>
-          <span><h2>Students List</h2></span><br />
-            <div className="form-group" >
-
-              <Select name="form-field-name" value={this.state.groupSelected} placeholder="Filter by group" searchable options={coursesList} onChange={this.updateValue} />
-
-            </div>
+          <span><h2>Announcements dashboard</h2></span><br />
+          {this.renderSelectGroupControl()}
           <table className="table">
             <thead>
               <tr>
-                <th>Student</th>
-                <th>Email</th>
-                <th>Group</th>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Body</th>
               </tr>
             </thead>
             <tbody>
@@ -145,8 +165,6 @@ class StudentsList extends Component {
 }
 
 export default createContainer(() => {
-  Meteor.subscribe('allUsers');
-  return {
-    allUsers: Meteor.users.find({}).fetch(),
-  };
-}, StudentsList);
+  Meteor.subscribe('announcements');
+  return { announcements: Announcements.find({}, { sort: { creationDate: -1 } }).fetch() };
+}, AnnouncementsList);
